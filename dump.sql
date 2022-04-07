@@ -165,18 +165,18 @@ SET FOREIGN_KEY_CHECKS = 0;
 
     DROP PROCEDURE IF EXISTS `setProductQuantity`;
     DELIMITER $$
-    CREATE PROCEDURE `setProductQuantity` (IN `newQuantity` INT, IN `newId` INT, IN `operator` VARCHAR(5))
+    CREATE PROCEDURE `setProductQuantity` (IN newQuantity INT, IN productId INT, IN operator VARCHAR(5))
     BEGIN
-        DECLARE `qta` INT(2);
-        SET `qta` = (SELECT `quantity` FROM `product` WHERE `product`.`id_product` = `newId`);
-        IF `operator` = 'minus' THEN
-            IF `qta` - `newQuantity` >= 0 THEN
-                UPDATE `product` SET `quantity` = `quantity` - `newQuantity` WHERE `product`.`id_product` = `newId`;
+        DECLARE qta INT(2);
+        SET qta = (SELECT `quantity` FROM `product` WHERE `product`.`id_product` = productId);
+        IF operator = 'minus' THEN
+            IF qta - newQuantity >= 0 THEN
+                UPDATE `product` SET `quantity` = `quantity` - newQuantity WHERE `product`.`id_product` = productId;
             ELSE
                 SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'The product does not have the desired available quantity';
             END IF;
         ELSE
-            UPDATE `product` SET `quantity` = `quantity` + `newQuantity` WHERE `product`.`id_product` = `newId`;
+            UPDATE `product` SET `quantity` = `quantity` + newQuantity WHERE `product`.`id_product` = productId;
         END IF;
     END $$
     DELIMITER ;
